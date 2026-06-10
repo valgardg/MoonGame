@@ -12,17 +12,28 @@ public class EclipseManager : MonoBehaviour
     public float screamingDampening = 0.1f;
     public AudioSource screamAudioSource;
 
+
+    private float elapsedTime = 0f;
+    private float screamingStrength = 0f;
+
     void Start()
     {
+        screamAudioSource.volume = 0f;
+        screamAudioSource.Play();
         EclipseDetector.OnEclipseStart += HandleEclipseStart;
         EclipseDetector.OnEclipseEnd += HandleEclipseEnd;
+    }
+
+    void Update()
+    {
+        Screaming();
     }
 
     private void HandleEclipseStart()
     {
         isEclipseActive = true;
         StartCoroutine(Shaking());
-        StartCoroutine(Screaming());
+        // StartCoroutine(Screaming());
     }
 
     private void HandleEclipseEnd()
@@ -53,29 +64,22 @@ public class EclipseManager : MonoBehaviour
         transform.position = originalPosition;
     }
 
-    IEnumerator Screaming()
+    private void Screaming()
     {
-        float elapsedTime = 0f;
-        float screamingStrength = 0f;
-
-        screamAudioSource.volume = 0f;
-        screamAudioSource.Play();
-
-        while (isEclipseActive)
+        if (isEclipseActive)
         {
             elapsedTime += Time.deltaTime;
             screamingStrength = screamingCurve.Evaluate(Math.Min(1f, elapsedTime / maxDuration));
             screamAudioSource.volume = screamingStrength;
-            yield return null;
         }
-
-        while (screamingStrength > 0f)
+        else if (screamingStrength > 0f)
         {
+            elapsedTime = 0f; // reset elapsed time for next eclipse
             screamingStrength -= screamingDampening * Time.deltaTime;
             screamAudioSource.volume = Mathf.Max(0f, screamingStrength);
-            yield return null;
+        } else
+        {
+            elapsedTime = 0f; // ensure elapsed time is reset when not screaming
         }
-
-        screamAudioSource.Stop();
     }
 }

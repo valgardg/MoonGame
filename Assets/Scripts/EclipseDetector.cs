@@ -15,6 +15,8 @@ public class EclipseDetector : MonoBehaviour
     void Update()
     {
         bool hasLineOfSight = HasLineOfSight();
+        Debug.DrawLine(transform.position, target.position, hasLineOfSight ? Color.green : Color.red);
+    
 
         if (hasLineOfSight && isEclipseActive)
         {
@@ -41,5 +43,13 @@ public class EclipseDetector : MonoBehaviour
             distance,
             moonLayer
         );
+    }
+
+    void OnDrawGizmos()
+    {
+        if (target == null) return;
+
+        Gizmos.color = isEclipseActive ? Color.red : Color.green;
+        Gizmos.DrawLine(transform.position, target.position);
     }
 }

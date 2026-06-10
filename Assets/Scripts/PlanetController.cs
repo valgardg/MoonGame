@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -12,7 +13,13 @@ public class PlanetController : MonoBehaviour
     [SerializeField] private float fadeOutDuration = 2f;
     [SerializeField] private float fadeInDuration = 0.4f;
     [SerializeField] private float minAlpha = 0.1f;
+    private float maxAlpha = 1f;
+    
 
+    [SerializeField] private float fadeOutSpeed = 1f;
+    [SerializeField] private float fadeInSpeed = 2.5f;
+
+    private bool isEclipseActive = false;
     private Coroutine fadeCoroutine;
 
     void Start()
@@ -30,12 +37,30 @@ public class PlanetController : MonoBehaviour
     void Update()
     {
         RotateTowardsTarget();
+        // UpdateAlpha();
     }
+
+    // private void UpdateAlpha()
+    // {
+    //     SpriteRenderer sr = spriteRenderer; // shorthand the reference
+    //     float newAlpha;
+
+    //     if (isEclipseActive)
+    //     {
+    //         newAlpha = Math.Max(minAlpha, sr.color.a - fadeOutSpeed * Time.deltaTime);
+    //     } else
+    //     {
+    //         newAlpha = Math.Min(maxAlpha, sr.color.a + fadeInSpeed * Time.deltaTime);
+    //     }
+
+    //     sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, Math.Clamp(newAlpha, minAlpha, maxAlpha)); // ensure we don't go below min alpha
+    // }
 
     private void HandleEclipseStart()
     {
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
         fadeCoroutine = StartCoroutine(FadeAlpha(spriteRenderer.color.a, minAlpha, fadeOutDuration));
+        isEclipseActive = true;
     }
 
     private IEnumerator FadeAlpha(float from, float to, float duration)
@@ -58,6 +83,7 @@ public class PlanetController : MonoBehaviour
     {
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
         fadeCoroutine = StartCoroutine(FadeIn());
+        isEclipseActive = false;
     }
 
     private IEnumerator FadeIn()
