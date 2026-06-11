@@ -11,6 +11,10 @@ public class EclipseManager : MonoBehaviour
     public float strengthDampening = 0.1f;
     public float screamingDampening = 0.1f;
     public AudioSource screamAudioSource;
+    public AudioSource ambientAudioSource;
+
+    public float ambientFadeSpeed = 2f;
+    public float ambientMaxVolume = 0.5f;
 
 
     private float elapsedTime = 0f;
@@ -20,6 +24,8 @@ public class EclipseManager : MonoBehaviour
     {
         screamAudioSource.volume = 0f;
         screamAudioSource.Play();
+        ambientAudioSource.volume = ambientMaxVolume;
+        ambientAudioSource.Play();
         EclipseDetector.OnEclipseStart += HandleEclipseStart;
         EclipseDetector.OnEclipseEnd += HandleEclipseEnd;
     }
@@ -74,12 +80,15 @@ public class EclipseManager : MonoBehaviour
         }
         else if (screamingStrength > 0f)
         {
-            elapsedTime = 0f; // reset elapsed time for next eclipse
+            elapsedTime = 0f;
             screamingStrength -= screamingDampening * Time.deltaTime;
             screamAudioSource.volume = Mathf.Max(0f, screamingStrength);
-        } else
-        {
-            elapsedTime = 0f; // ensure elapsed time is reset when not screaming
         }
+        else
+        {
+            elapsedTime = 0f;
+        }
+
+        ambientAudioSource.volume = Mathf.Clamp01(1f - screamingStrength * ambientFadeSpeed) * ambientMaxVolume;
     }
 }
