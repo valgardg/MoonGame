@@ -6,6 +6,9 @@ public class EclipseEventSpawner : MonoBehaviour
     [SerializeField] private GameObject eclipseEndPrefab;
     [SerializeField] private Transform container;
 
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip eclipseEndSound;
+
     private float eclipseStartTime;
 
     void OnEnable()
@@ -31,5 +34,6 @@ public class EclipseEventSpawner : MonoBehaviour
         float duration = Time.time - eclipseStartTime;
         GameObject obj = Instantiate(eclipseEndPrefab, container);
         obj.GetComponent<EclipseEndedPrefab>().Initialize(duration);
+        audioSource.PlayOneShot(eclipseEndSound);
     }
 }
