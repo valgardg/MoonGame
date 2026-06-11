@@ -13,6 +13,7 @@ public class PlanetController : MonoBehaviour
     [SerializeField] private float fadeOutDuration = 2f;
     [SerializeField] private float fadeInDuration = 0.4f;
     [SerializeField] private float minAlpha = 0.1f;
+    [SerializeField] private AnimationCurve fadeOutCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
     private float maxAlpha = 1f;
     
 
@@ -40,22 +41,6 @@ public class PlanetController : MonoBehaviour
         // UpdateAlpha();
     }
 
-    // private void UpdateAlpha()
-    // {
-    //     SpriteRenderer sr = spriteRenderer; // shorthand the reference
-    //     float newAlpha;
-
-    //     if (isEclipseActive)
-    //     {
-    //         newAlpha = Math.Max(minAlpha, sr.color.a - fadeOutSpeed * Time.deltaTime);
-    //     } else
-    //     {
-    //         newAlpha = Math.Min(maxAlpha, sr.color.a + fadeInSpeed * Time.deltaTime);
-    //     }
-
-    //     sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, Math.Clamp(newAlpha, minAlpha, maxAlpha)); // ensure we don't go below min alpha
-    // }
-
     private void HandleEclipseStart()
     {
         if (fadeCoroutine != null) StopCoroutine(fadeCoroutine);
@@ -69,8 +54,9 @@ public class PlanetController : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
+            float t = elapsed / duration;
             Color c = spriteRenderer.color;
-            c.a = Mathf.Lerp(from, to, elapsed / duration);
+            c.a = Mathf.Lerp(from, to, fadeOutCurve.Evaluate(t));
             spriteRenderer.color = c;
             yield return null;
         }
