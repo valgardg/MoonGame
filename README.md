@@ -1,6 +1,6 @@
 # MoonGame
 
-Made for the Game Makers Iceland Summer Game Jam 2026; theme was Eclipse ☀️
+Made for the Game Makers Iceland Summer Game Jam 2026; theme was Eclipse https://valgardg.itch.io/moon-simulator ☀️
 
 Solo dev 🚀
 
